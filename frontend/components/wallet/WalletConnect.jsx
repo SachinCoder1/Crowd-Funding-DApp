@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { AiOutlinePlus } from "react-icons/ai";
 import Button from "../../subcomponents/btns/Button";
@@ -20,35 +20,60 @@ const networks = {
 export default function WalletConnect() {
   const [address, setAddress] = useState("");
   const [balance, setBalance] = useState("");
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (window) {
+      window.ethereum.on("accountsChanged", (accounts) => {
+        if (accounts.length > 0) {
+          console.log(accounts);
+          setAddress(accounts[0]);
+          connectWallet();
+          console.log("Account Changed");
+        } else {
+          setAddress("");
+          console.log(accounts);
+          setBalance("");
+          localStorage.removeItem("injected");
+          console.log("Disconnected");
+        }
+      });
+    }
+
+    if (localStorage.getItem("injected")) {
+      connectWallet();
+    }
+  }, []);
 
   const connectWallet = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       await window.ethereum.request({ method: "eth_requestAccounts" });
-    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-    if (provider.network !== "matic") {
-      await window.ethereum.request({
-        method: "wallet_addEthereumChain",
-        params: [
-          {
-            ...networks["polygon"],
-          },
-        ],
-      });
-    }
-    const account = provider.getSigner();
-    const Address = await account.getAddress();
-    setAddress(Address);
-    const Balance = ethers.utils.formatEther(await account.getBalance());
-    setBalance(Balance);
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum,
+        "any"
+      );
+      if (provider.network !== "matic") {
+        await window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [
+            {
+              ...networks["polygon"],
+            },
+          ],
+        });
+      }
+      const account = provider.getSigner();
+      const Address = await account.getAddress();
+      setAddress(Address);
+      const Balance = ethers.utils.formatEther(await account.getBalance());
+      setBalance(Balance);
+      localStorage.setItem("injected", "web3");
 
-    setLoading(false)
-      
+      setLoading(false);
     } catch (error) {
-      setLoading(false)
-      console.log("Error while connected wallet ", error)
-      
+      setLoading(false);
+      console.log("Error while connected wallet ", error);
     }
   };
 
