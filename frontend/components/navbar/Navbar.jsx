@@ -8,7 +8,6 @@ import WalletConnect from "../wallet/WalletConnect";
 export default function Navbar() {
     const router = useRouter();
   const [isMobileNavOpen, setisMobileNavOpen] = useState(false); // For toggling the mobile nav
-  console.log(isMobileNavOpen)
 
   //   If button is there
   const handleClick = () => {
