@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { AiOutlineArrowUp } from "react-icons/ai";
+import { ethers } from "ethers";
 import { MdAddTask } from "react-icons/md";
 import { useRouter } from "next/router";
 import {
@@ -13,27 +14,30 @@ import {
 // import Button from "../../subcomponents/btns/Button";
 import { categories } from "../../data";
 import { create as ipfsHttpClient } from "ipfs-http-client";
+import { contractAddress } from "../../constants";
+import { abi } from "../../constants/CrowdFunding.json";
 
 export default function CreateCampaign() {
   // const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
-  const PROJECT_ID = process.env.NEXT_PUBLIC_PROJECT_ID
-  const PROJECT_SECRET= process.env.NEXT_PUBLIC_PROJECT_SECRET
+  const PROJECT_ID = process.env.NEXT_PUBLIC_PROJECT_ID;
+  const PROJECT_SECRET = process.env.NEXT_PUBLIC_PROJECT_SECRET;
 
-  const auth = 'Basic ' + Buffer.from(PROJECT_ID + ":" + PROJECT_SECRET).toString('base64')
+  const auth =
+    "Basic " +
+    Buffer.from(PROJECT_ID + ":" + PROJECT_SECRET).toString("base64");
 
-const client = ipfsHttpClient({
-  host:'ipfs.infura.io',
-  port:5001,
-  protocol: 'https',
-  headers: {
-    authorization: auth
-  }
-})
-
-
+  const client = ipfsHttpClient({
+    host: "ipfs.infura.io",
+    port: 5001,
+    protocol: "https",
+    headers: {
+      authorization: auth,
+    },
+  });
 
   const router = useRouter();
   const [isListing, setisListing] = useState(false);
+  const [category, setCategory] = useState("")
   const [file, setFile] = useState();
   const [formData, setFormData] = useState({
     title: "",
@@ -63,12 +67,27 @@ const client = ipfsHttpClient({
     console.log(formData);
   };
 
-  const handleClick = () => {
-    const { name, price, description } = formData;
-    if (!name || !price || !description || !file) {
+  const handleClick = async () => {
+    const { title, description, amount } = formData;
+    if (!title || !amount || !description || !file || !category) {
       console.log("Some feild are missing");
       return;
     }
+
+    const numAmount = parseInt(amount);
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+
+    const contract = new ethers.Contract(contractAddress, abi, signer);
+
+    const campaignData = await contract.createCampaign(title, file, description, category, numAmount);
+    await campaignData.wait();
+
+    if(campaignData.to){
+      console.log("campaign started...", campaignData.to);
+    }
+    
   };
 
   return (
@@ -117,11 +136,13 @@ const client = ipfsHttpClient({
           <Select
             color="green"
             variant="standard"
-            onChange={(e) => console.log("changed value -> ", e)}
+            onChange={(e) => setCategory(e)}
             label="Category"
           >
             {categories?.map((item, index) => (
-              <Option key={index} value={item.value}>{item.label}</Option>
+              <Option key={index} value={item.value}>
+                {item.label}
+              </Option>
             ))}
           </Select>
         </div>
