@@ -1,10 +1,12 @@
 import React from 'react'
+import CreateCampaign from '../components/create-campaign/CreateCampaign'
 import Navbar from '../components/navbar/Navbar'
+import MainLayout from '../layouts/MainLayout'
 
-export default function createCampaign() {
+export default function Campaign() {
   return (
-    <div>
-        <Navbar />
-    </div>
+    <MainLayout>
+        <CreateCampaign />
+    </MainLayout>
   )
 }
