@@ -37,7 +37,8 @@ contract CrowdFunding {
             _title,
             _image,
             _description,
-            _requiredAmount
+            _requiredAmount,
+            msg.sender
         );
 
         s_AllCampaignAddresses.push(address(newCampaign));
@@ -79,7 +80,8 @@ contract Campaign {
         string memory _title,
         string memory _image,
         string memory _description,
-        uint256 _requiredAmount
+        uint256 _requiredAmount,
+        address _campaignOwner
     ) {
         newCampaign = CampaignStruct(
             _title,
@@ -87,7 +89,7 @@ contract Campaign {
             _description,
             _requiredAmount,
             0,
-            payable(msg.sender)
+            payable(_campaignOwner)
         );
     }
 

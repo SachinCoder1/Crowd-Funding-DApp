@@ -74,14 +74,14 @@ export default function CreateCampaign() {
       return;
     }
 
-    const numAmount = parseInt(amount);
+    const amountInWEI = ethers.utils.parseEther(amount)
 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
 
     const contract = new ethers.Contract(contractAddress, abi, signer);
 
-    const campaignData = await contract.createCampaign(title, file, description, category, numAmount);
+    const campaignData = await contract.createCampaign(title, file, description, category, amountInWEI);
     await campaignData.wait();
 
     if(campaignData.to){

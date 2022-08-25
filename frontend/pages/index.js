@@ -5,7 +5,7 @@ import { contractAddress } from "../constants";
 import MainLayout from "../layouts/MainLayout";
 import ContractABI from "../constants/CrowdFunding.json";
 import { ethers } from "ethers";
-import React, { useEffect } from "react";
+import React from "react";
 
 export default function Home({AllData, HealthData, EducationData, ngoData}) {
   console.log("All Data -> ", AllData);
@@ -13,8 +13,6 @@ export default function Home({AllData, HealthData, EducationData, ngoData}) {
   console.log("eduaction Data -> ", EducationData);
   console.log("NGO Data -> ", ngoData);
 
- 
-  
   return (
     <MainLayout
       metaTitle="Home"
