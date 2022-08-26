@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { ethers } from "ethers";
 import { AiOutlinePlus } from "react-icons/ai";
 import { Button } from "@material-tailwind/react";
+import { MainContext } from "../../context/MainContext";
 // import Button from "../../subcomponents/btns/Button";
 
 
@@ -20,7 +21,7 @@ const networks = {
 };
 
 export default function WalletConnect() {
-  const [address, setAddress] = useState("");
+  const {accountAddress, setAccountAddress} = useContext(MainContext)
   const [balance, setBalance] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -30,11 +31,11 @@ export default function WalletConnect() {
         window.ethereum.on("accountsChanged", (accounts) => {
           if (accounts.length > 0) {
             console.log(accounts);
-            setAddress(accounts[0]);
+            setAccountAddress(accounts[0]);
             connectWallet();
             console.log("Account Changed");
           } else {
-            setAddress("");
+            setAccountAddress("");
             console.log(accounts);
             setBalance("");
             localStorage.removeItem("injected");
@@ -69,7 +70,7 @@ export default function WalletConnect() {
       }
       const account = provider.getSigner();
       const Address = await account.getAddress();
-      setAddress(Address);
+      setAccountAddress(Address);
       const Balance = ethers.utils.formatEther(await account.getBalance());
       setBalance(Balance);
       localStorage.setItem("injected", "web3");
@@ -83,10 +84,10 @@ export default function WalletConnect() {
 
   return (
     <div>
-      {address.length > 2 ? (
+      {accountAddress.length > 2 ? (
         <div className="bg-slate-200 py-2.5 rounded-2xl pl-4 cursor-pointer">
           <span className="text-black">
-            {address.slice(0, 6)}...{address.slice(address.length - 4)}
+            {accountAddress.slice(0, 6)}...{accountAddress.slice(accountAddress.length - 4)}
           </span>
           <span className="bg-primary py-2.5 ml-4 px-3 rounded-2xl text-white">
             {balance.slice(0, 4)} ETH

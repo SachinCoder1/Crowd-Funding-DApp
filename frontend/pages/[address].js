@@ -1,48 +1,25 @@
 import { Button } from "@material-tailwind/react";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CampaignDetail from "../components/campaign-details/CampaignDetail";
 import MainLayout from "../layouts/MainLayout";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import TransactionTab from "../components/campaign-details/TransactionTab";
 import Transaction from "../components/campaign-details/Transaction";
 import { contractAddress } from "../constants";
-import ContractABI from '../constants/CrowdFunding.json'
-import CampaignABI from '../constants/Campaign.json'
+import ContractABI from "../constants/CrowdFunding.json";
+import CampaignABI from "../constants/Campaign.json";
 import { ethers } from "ethers";
-
-const data = {
-  image:
-    "https://crowdfunding1.infura-ipfs.io/ipfs/QmZcVT7mD9S9S3qudGSy3AhFuEurx3tnDU7N7NMYQQJgyx",
-  name: "Fund My Masters",
-  description:
-    "For the purpose to educate and train the special children Sadhana society started their Institute ‘Sadhana vocational training institute’ for the mentally handicapped in Chandigarh. The institute opened up new avenues for intellectually disabled under the expert guidance of educators, physiotherapist, speech therapist, yoga and dance teachers and the parents working voluntarily hard. Children are put to various schemes and programmes with the scientific approach apart from the basic academic.",
-  price: "500",
-  recievedAmount: "20",
-  publishedDate: "02 Jan 2022",
-};
-
-const recentTxData = [
-  {
-    address: "0x00000000232328283739373927392",
-    fundedAmount: "25",
-    publishedDate: "02 March 2022",
-  },
-  {
-    address: "0x00000000232328283739373927392",
-    fundedAmount: "25",
-    publishedDate: "02 March 2022",
-  },
-];
-
-
+import { MainContext } from "../context/MainContext";
 
 export default function Details({ Data, DonationsData }) {
-
+  const { accountAddress } = useContext(MainContext);
+  const [myTransactions, setMyTransactions] = useState([]);
+  const [isUpdated, setIsUpdated] = useState(false);
   const tabData = [
     {
       label: "Recent Transactions",
       value: "recenttx",
-      desc: DonationsData ? (
+      desc: DonationsData.length ? (
         <Transaction data={DonationsData} />
       ) : (
         "No Transactions Found"
@@ -51,15 +28,47 @@ export default function Details({ Data, DonationsData }) {
     {
       label: "My Transactions",
       value: "mytx",
-      desc: DonationsData ? (
-        <Transaction data={DonationsData} />
+      desc: accountAddress ? (
+        myTransactions.length ? (
+          <Transaction data={myTransactions} />
+        ) : (
+          "No Transactions Found"
+        )
       ) : (
-        "No Transactions Found"
+        "You are Not Logged In!"
       ),
     },
   ];
 
-  
+  useEffect(() => {
+    const Request = async () => {
+      if (accountAddress) {
+        const provider = new ethers.providers.JsonRpcProvider(
+          process.env.NEXT_PUBLIC_POLYGON_RPC_URL
+        );
+
+        const contract = new ethers.Contract(
+          Data.address,
+          CampaignABI.abi,
+          provider
+        );
+        const MyDonations = contract.filters.campaignFunded(accountAddress);
+        const MyAllDonations = await contract.queryFilter(MyDonations);
+
+        setMyTransactions(
+          MyAllDonations.map((e) => {
+            return {
+              donar: e.args.donar,
+              amount: ethers.utils.formatEther(e.args.amount),
+              timestamp: parseInt(e.args.timestamp),
+            };
+          })
+        );
+      }
+    };
+    Request();
+  }, [isUpdated, accountAddress]);
+
   console.log("Detail page data -> ", Data);
   console.log("Detail page DonationsData -> ", DonationsData);
   return (
@@ -104,15 +113,14 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
-    const RPC_URL = process.env.NEXT_PUBLIC_POLYGON_RPC_URL;
-    const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
-  
-    const contract = new ethers.Contract(
-      context.params.address,
-      CampaignABI.abi,
-      provider
-    );
-  
+  const RPC_URL = process.env.NEXT_PUBLIC_POLYGON_RPC_URL;
+  const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
+
+  const contract = new ethers.Contract(
+    context.params.address,
+    CampaignABI.abi,
+    provider
+  );
 
   const CampaignData = await contract.getCampaign();
   const Donations = contract.filters.campaignFunded();
@@ -120,7 +128,7 @@ export async function getStaticProps(context) {
 
   const Data = {
     address: context.params.address,
-    title : CampaignData.title,
+    title: CampaignData.title,
     requiredAmount: ethers.utils.formatEther(CampaignData.requiredAmount),
     image: CampaignData.image,
     receivedAmount: ethers.utils.formatEther(CampaignData.recievedAmount),
@@ -130,7 +138,7 @@ export async function getStaticProps(context) {
 
   const DonationsData = AllDonations.map((e) => {
     return {
-        funder: e.args.funder,
+      funder: e.args.funder,
       amount: ethers.utils.formatEther(e.args.amount),
       timestamp: parseInt(e.args.timestamp),
     };

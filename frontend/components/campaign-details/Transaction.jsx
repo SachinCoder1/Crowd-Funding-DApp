@@ -4,6 +4,7 @@ import { MdDateRange } from "react-icons/md";
 import { FaRegAddressBook, FaEthereum } from "react-icons/fa";
 
 export default function Transaction({ data }) {
+    console.log("You are in transaction component")
   return (
     <div className="bg-gray-300 px-3 ">
       {data?.map((item, index) => (
