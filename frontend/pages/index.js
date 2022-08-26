@@ -1,24 +1,72 @@
-import Head from "next/head";
-import Image from "next/image";
-import Navbar from "../components/navbar/Navbar";
 import { contractAddress } from "../constants";
 import MainLayout from "../layouts/MainLayout";
 import ContractABI from "../constants/CrowdFunding.json";
 import { ethers } from "ethers";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import Card1 from "../subcomponents/card/Card1";
+import { Select, Option, Button } from "@material-tailwind/react";
+import { categoriesMain } from "../data";
 
-export default function Home({AllData, HealthData, EducationData, ngoData}) {
+export default function Home({ AllData, HealthData, EducationData, ngoData }) {
   console.log("All Data -> ", AllData);
   console.log("health Data -> ", HealthData);
   console.log("eduaction Data -> ", EducationData);
   console.log("NGO Data -> ", ngoData);
+  const [filteredData, setFilteredData] = useState(AllData);
+
+  const [category, setCategory] = useState("all");
+
+  useEffect(() => {
+    switch (category) {
+      case "education":
+        setFilteredData(EducationData);
+        break;
+      case "health":
+        setFilteredData(HealthData);
+        break;
+      case "ngo":
+        setFilteredData(ngoData);
+        break;
+      default:
+        setFilteredData(AllData);
+        break;
+    }
+  }, [category]);
 
   return (
     <MainLayout
       metaTitle="Home"
       metaDescription="All Campaigns where you can see another person's campaigns, fund campaigns in decentralized manner. Truly Decentralized."
     >
-      Hello
+    <div className="w-40 my-10 mx-auto space-y-2">
+       
+      <Select
+        color="green"
+        variant="standard"
+        onChange={(e) => setCategory(e)}
+        label="Category"
+        >
+        {categoriesMain?.map((item, index) => (
+          <Option key={index} value={item.value}>
+            {item.label}
+          </Option>
+        ))}
+      </Select>
+     
+        </div>
+      <div className="flex flex-wrap justify-center items-center gap-x-10">
+        {filteredData?.map((item, index) => (
+          <Card1
+            key={index}
+            imgSrc={item.image}
+            title={item.title}
+            description={item.description}
+            address={item.owner}
+            requiredAmt={item.amount}
+            publishedDate={item.timeStamp}
+          />
+        ))}
+      </div>
     </MainLayout>
   );
 }
@@ -26,7 +74,6 @@ export default function Home({AllData, HealthData, EducationData, ngoData}) {
 export async function getStaticProps() {
   const RPC_URL = process.env.NEXT_PUBLIC_POLYGON_RPC_URL;
   const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
-
 
   const contract = new ethers.Contract(
     contractAddress,
@@ -39,6 +86,7 @@ export async function getStaticProps() {
   const AllData = AllCampaigns.map((e) => {
     return {
       title: e.args._title,
+      description: e.args._description,
       image: e.args._image,
       owner: e.args._campaignOwner,
       timeStamp: parseInt(e.args._timestamp),
@@ -48,6 +96,7 @@ export async function getStaticProps() {
   });
 
   const getHealthCampaigns = contract.filters.campaignCreated(
+    null,
     null,
     null,
     "health",
@@ -60,6 +109,7 @@ export async function getStaticProps() {
   const HealthData = HealthCampaigns.map((e) => {
     return {
       title: e.args._title,
+      description: e.args._description,
       image: e.args._image,
       owner: e.args._campaignOwner,
       timeStamp: parseInt(e.args._timestamp),
@@ -69,6 +119,7 @@ export async function getStaticProps() {
   });
 
   const getEducationCampaigns = contract.filters.campaignCreated(
+    null,
     null,
     null,
     "education",
@@ -81,6 +132,7 @@ export async function getStaticProps() {
   const EducationData = EducationCampaigns.map((e) => {
     return {
       title: e.args._title,
+      description: e.args._description,
       image: e.args._image,
       owner: e.args._campaignOwner,
       timeStamp: parseInt(e.args._timestamp),
@@ -90,6 +142,7 @@ export async function getStaticProps() {
   });
 
   const getNGOCampaigns = contract.filters.campaignCreated(
+    null,
     null,
     null,
     "ngo",
@@ -102,6 +155,7 @@ export async function getStaticProps() {
   const ngoData = NGOCampaign.map((e) => {
     return {
       title: e.args._title,
+      description: e.args._description,
       image: e.args._image,
       owner: e.args._campaignOwner,
       timeStamp: parseInt(e.args._timestamp),

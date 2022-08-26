@@ -9,6 +9,7 @@ contract CrowdFunding {
     event campaignCreated(
         string _title,
         string _image,
+        string _description,
         string indexed _category,
         uint256 _requiredAmount,
         uint256 indexed _timestamp,
@@ -46,6 +47,7 @@ contract CrowdFunding {
         emit campaignCreated(
             _title,
             _image,
+            _description,
             _category,
             _requiredAmount,
             block.timestamp,
