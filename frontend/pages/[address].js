@@ -1,4 +1,4 @@
-import { Button } from "@material-tailwind/react";
+import { Button, Input } from "@material-tailwind/react";
 import React, { useContext, useEffect, useState } from "react";
 import CampaignDetail from "../components/campaign-details/CampaignDetail";
 import MainLayout from "../layouts/MainLayout";
@@ -13,8 +13,10 @@ import { MainContext } from "../context/MainContext";
 
 export default function Details({ Data, DonationsData }) {
   const { accountAddress } = useContext(MainContext);
+  const [isUserFunding, setIsUserFunding] = useState(false);
   const [myTransactions, setMyTransactions] = useState([]);
-  const [isUpdated, setIsUpdated] = useState(false);
+  const [fundInput, setFundInput] = useState("");
+  const [isUpdated, setIsUpdated] = useState("notChanged");
   const tabData = [
     {
       label: "Recent Transactions",
@@ -40,6 +42,29 @@ export default function Details({ Data, DonationsData }) {
     },
   ];
 
+  const transferFund = async () => {
+    if(fundInput <= 0)return;
+    console.log("Clicked ", fundInput)
+    try {
+      console.log("you are inside try")
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      const contract = new ethers.Contract(Data.address, CampaignABI.abi, signer);
+
+      const transaction = await contract.fundCampaign({
+        value: ethers.utils.parseEther(fundInput),
+      });
+      await transaction.wait();
+
+      setIsUpdated(isUpdated == 'changed' ? 'notChanged' : "changed");
+      setAmount("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const Request = async () => {
       if (accountAddress) {
@@ -58,7 +83,7 @@ export default function Details({ Data, DonationsData }) {
         setMyTransactions(
           MyAllDonations.map((e) => {
             return {
-              donar: e.args.donar,
+              funder: e.args.funder,
               amount: ethers.utils.formatEther(e.args.amount),
               timestamp: parseInt(e.args.timestamp),
             };
@@ -74,13 +99,48 @@ export default function Details({ Data, DonationsData }) {
   return (
     <MainLayout>
       <CampaignDetail data={Data}>
-        <Button
-          className="flex items-center justify-center text-base gap-x-2 bg-primary"
-          fullWidth
-        >
-          Fund Now
-          <AiOutlineArrowRight className="text-2xl" />
-        </Button>
+        {isUserFunding && (
+          <>
+          <div className="my-5 space-y-5 w-36">
+            <Input
+              color="green"
+              variant="standard"
+              name="amount"
+              onChange={(e) =>{ setFundInput(e.target.value)  }}
+              label="Enter Amount"
+            />
+          </div>
+            <Button
+              onClick={() => transferFund()}
+              className="flex items-center justify-center text-base gap-x-2 bg-primary"
+              fullWidth
+              disabled={!fundInput.length && fundInput <= 0}
+            >
+              Fund Now
+              <AiOutlineArrowRight className="text-2xl" />
+            </Button>
+            </>
+        )}
+
+        {isUserFunding ? (
+          <Button
+            onClick={() => setIsUserFunding(false)}
+            className="bg-red-500 mt-12"
+          >
+            Cancel
+            {/* <AiOutlineArrowRight className="text-2xl" /> */}
+          </Button>
+        ) : (
+          <Button
+            onClick={() => setIsUserFunding(true)}
+            className="flex items-center justify-center text-base gap-x-2 bg-primary"
+            fullWidth
+          >
+            Fund Now
+            <AiOutlineArrowRight className="text-2xl" />
+          </Button>
+        )}
+
         <div className="my-5 py-5 px-3">
           <TransactionTab data={tabData} />
         </div>
