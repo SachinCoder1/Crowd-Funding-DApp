@@ -1,10 +1,13 @@
 import { Typography, Progress } from "@material-tailwind/react";
-import React from "react";
+import React, {useState} from "react";
 import { FaEthereum } from "react-icons/fa";
 import { MdDateRange } from "react-icons/md";
+import { BiShowAlt } from "react-icons/bi";
 
 export default function CampaignDetail({ data, children }) {
-  console.log((data.recievedAmount / data.price) * 100);
+    const [showFullAddress, setShowFullAddress] = useState(false)
+  console.log((data.receivedAmount / data.requiredAmount) * 100);
+  console.log(data.receivedAmount)
   return (
     <>
       {!data ? (
@@ -14,40 +17,32 @@ export default function CampaignDetail({ data, children }) {
           <div className="grid grid-cols-2">
             <div className="">
               <img className=" py-5 mx-auto" src={data?.image} />
-              <div className="flex items-center justify-start gap-x-8">
+              <div className="flex items-center justify-center gap-x-8">
                 <Typography
                   variant="small"
                   color="gray"
                   className="flex gap-1 items-center"
                 >
-                  <MdDateRange />
-                  {data.publishedDate}
-                </Typography>
-                <Typography
-                  variant="small"
-                  color="gray"
-                  className="flex gap-1 items-center"
-                >
-                  <MdDateRange />
-                  {data.publishedDate}
+                  {showFullAddress ? data.address : data.address.slice(0,6)+"..." + data.address.slice(data.address.length-4)}
+                  <BiShowAlt className="cursor-pointer hover:scale-110 transition-all" onClick={() => setShowFullAddress(!showFullAddress)} />
                 </Typography>
               </div>
             </div>
             <div className="flex flex-col justify-between p-7">
-              <p>Recieved Amount ({data.recievedAmount} ETH)</p>
+              <p>Recieved Amount ({data.receivedAmount} ETH)</p>
               <Progress
                 className="h-6 text-white"
-                value={(data.recievedAmount / data.price) * 100}
+                value={(data.receivedAmount / data.requiredAmount) * 100}
                 label
               />
               <div className="space-y-3 my-5">
-                <p className="text-6xl font-bold text-blue-500">{data?.name}</p>
+                <p className="text-6xl font-bold text-blue-500">{data?.title}</p>
                 <p className="text-gray-600">{data?.description}</p>
                 <p className="font-bold text-4xl text-green-500 flex items-center gap-x-1.5">
                   <span className="text-gray-600 text-base">
                     Required Fund : 
                   </span>
-                  <FaEthereum className="text-[#3c3c3d]" /> {data?.price} Ether
+                  <FaEthereum className="text-[#3c3c3d]" /> {data?.requiredAmount} Ether
                 </p>
               </div>
 

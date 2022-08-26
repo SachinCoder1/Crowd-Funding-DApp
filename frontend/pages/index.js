@@ -8,10 +8,10 @@ import { Select, Option, Button } from "@material-tailwind/react";
 import { categoriesMain } from "../data";
 
 export default function Home({ AllData, HealthData, EducationData, ngoData }) {
-  console.log("All Data -> ", AllData);
-  console.log("health Data -> ", HealthData);
-  console.log("eduaction Data -> ", EducationData);
-  console.log("NGO Data -> ", ngoData);
+  // console.log("All Data -> ", AllData);
+  // console.log("health Data -> ", HealthData);
+  // console.log("eduaction Data -> ", EducationData);
+  // console.log("NGO Data -> ", ngoData);
   const [filteredData, setFilteredData] = useState(AllData);
 
   const [category, setCategory] = useState("all");
@@ -64,6 +64,7 @@ export default function Home({ AllData, HealthData, EducationData, ngoData }) {
             address={item.owner}
             requiredAmt={item.amount}
             publishedDate={item.timeStamp}
+            campaignAddress={item.address}
           />
         ))}
       </div>
