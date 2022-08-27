@@ -1,5 +1,5 @@
 # FullStack Crowd Funding [Fund Raising] DApp (Decentralized Application)
-Complete Full Stack Decentralization Crowd Funding Application using solidity language for Smart Contract, hardhat for Dev Enviroment, and Next.js framework.
+Complete Full Stack Decentralization Crowd Funding Application using **Solidity** language for Smart Contract, **hardhat** for Dev Enviroment, and Next.js framework.
 
 
 
