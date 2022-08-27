@@ -14,7 +14,7 @@ import {
 import { categories } from "../../data";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 import { contractAddress } from "../../constants";
-import { abi } from "../../constants/CrowdFunding.json";
+import ContractABI from "../../constants/CrowdFunding.json";
 
 export default function CreateCampaign() {
   const PROJECT_ID = process.env.NEXT_PUBLIC_PROJECT_ID;
@@ -73,7 +73,7 @@ export default function CreateCampaign() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
 
-      const contract = new ethers.Contract(contractAddress, abi, signer);
+      const contract = new ethers.Contract(contractAddress, ContractABI.abi, signer);
 
       const campaignData = await contract.createCampaign(
         title,
