@@ -52,16 +52,12 @@ export default function CreateCampaign() {
       const url = `https://crowdfunding1.infura-ipfs.io/ipfs/${add.path}`;
       setFile(url);
     } catch (error) {
-      console.log(
-        "Error in onChange function , You are in catch of ListItem component ",
-        error
-      );
+      console.log("Error...", error);
     }
   };
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    console.log(formData);
   };
 
   const handleClick = async () => {
@@ -89,7 +85,6 @@ export default function CreateCampaign() {
       await campaignData.wait();
 
       if (campaignData.to) {
-        console.log("campaign started...", campaignData.to);
         router.push("/pastcampigns");
       }
     } catch (error) {

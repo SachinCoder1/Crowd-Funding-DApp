@@ -7,37 +7,36 @@ import { ethers } from "ethers";
 export default function Pastcampigns() {
   const { accountAddress, getCrowdFundingContract } = useContext(MainContext);
   const [myCampaigns, setMyCampaigns] = useState([]);
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const Request = async () => {
       if (accountAddress) {
         try {
-       setIsLoading(true);
-        const contract = await getCrowdFundingContract();
+          setIsLoading(true);
+          const contract = await getCrowdFundingContract();
 
-        const getAllCampaigns = contract.filters.campaignCreated(
-          null,
-          accountAddress
-        );
-        const AllCampaigns = await contract.queryFilter(getAllCampaigns);
-        const MyData = AllCampaigns.map((e) => {
-          return {
-            title: e.args._title,
-            description: e.args._description,
-            image: e.args._image,
-            owner: e.args._campaignOwner,
-            timeStamp: parseInt(e.args._timestamp),
-            amount: ethers.utils.formatEther(e.args._requiredAmount),
-            address: e.args._campaignAddress,
-          };
-        });
-        setMyCampaigns(MyData);
-        setIsLoading(false)
-    }
-        catch (error) {
-            setIsLoading(false);
-            console.log('error....', error)
+          const getAllCampaigns = contract.filters.campaignCreated(
+            null,
+            accountAddress
+          );
+          const AllCampaigns = await contract.queryFilter(getAllCampaigns);
+          const MyData = AllCampaigns.map((e) => {
+            return {
+              title: e.args._title,
+              description: e.args._description,
+              image: e.args._image,
+              owner: e.args._campaignOwner,
+              timeStamp: parseInt(e.args._timestamp),
+              amount: ethers.utils.formatEther(e.args._requiredAmount),
+              address: e.args._campaignAddress,
+            };
+          });
+          setMyCampaigns(MyData);
+          setIsLoading(false);
+        } catch (error) {
+          setIsLoading(false);
+          console.log("error....", error);
         }
       }
     };
@@ -61,7 +60,9 @@ export default function Pastcampigns() {
                   campaignAddress={item.address}
                 />
               ))
-            :  !myCampaigns.length && !isLoading ?  "No Campaigns Found" : "Loading..."
+            : !myCampaigns.length && !isLoading
+            ? "No Campaigns Found"
+            : "Loading..."
           : "Connect Wallet to see your Campaigns."}
       </div>
     </MainLayout>

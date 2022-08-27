@@ -8,13 +8,6 @@ import WalletConnect from "../wallet/WalletConnect";
 export default function Navbar() {
     const router = useRouter();
   const [isMobileNavOpen, setisMobileNavOpen] = useState(false); // For toggling the mobile nav
-
-  //   If button is there
-  const handleClick = () => {
-    if (isMobileNavOpen) {
-      setisMobileNavOpen(false);
-    }
-  };
   return (
     <div>
       <div className="flex flex-wrap sys-app-notCollapsed ">
@@ -108,8 +101,6 @@ export default function Navbar() {
                     </a>
                   </Link>
                 ))}
-
-                {/* After all nav links if you want any button or link then it will come here */}
                 <WalletConnect />
               </div>
             </div>

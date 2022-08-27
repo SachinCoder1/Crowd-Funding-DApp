@@ -1,13 +1,10 @@
 import { Typography, Progress } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { FaEthereum } from "react-icons/fa";
-import { MdDateRange } from "react-icons/md";
 import { BiShowAlt } from "react-icons/bi";
 
 export default function CampaignDetail({ data, children }) {
   const [showFullAddress, setShowFullAddress] = useState(false);
-  console.log((data.receivedAmount / data.requiredAmount) * 100);
-  console.log(data.receivedAmount);
   return (
     <>
       {!data ? (

@@ -9,17 +9,17 @@ import { categoriesMain } from "../data";
 
 export default function Home({ AllData, HealthData, EducationData, ngoData }) {
   const [filteredData, setFilteredData] = useState(AllData);
-  console.log(AllData)
-  const [isLoading, setIsLoading] = useState(false)
+  console.log(AllData);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [category, setCategory] = useState("all");
 
   useEffect(() => {
     switch (category) {
       case "education":
-        setIsLoading(true)
+        setIsLoading(true);
         setFilteredData(EducationData);
-        setIsLoading(false)
+        setIsLoading(false);
         break;
       case "health":
         setFilteredData(HealthData);
@@ -28,9 +28,9 @@ export default function Home({ AllData, HealthData, EducationData, ngoData }) {
         setFilteredData(ngoData);
         break;
       default:
-        setIsLoading(true)
+        setIsLoading(true);
         setFilteredData(AllData);
-        setIsLoading(false)
+        setIsLoading(false);
         break;
     }
   }, [category]);
@@ -100,9 +100,7 @@ export async function getStaticProps() {
     };
   });
 
-  const getHealthCampaigns = contract.filters.campaignCreated(
-    "health",
-  );
+  const getHealthCampaigns = contract.filters.campaignCreated("health");
   const HealthCampaigns = await contract.queryFilter(getHealthCampaigns);
   const HealthData = HealthCampaigns.map((e) => {
     return {
@@ -116,9 +114,7 @@ export async function getStaticProps() {
     };
   });
 
-  const getEducationCampaigns = contract.filters.campaignCreated(
-    "education",
-  );
+  const getEducationCampaigns = contract.filters.campaignCreated("education");
   const EducationCampaigns = await contract.queryFilter(getEducationCampaigns);
   const EducationData = EducationCampaigns.map((e) => {
     return {
@@ -132,9 +128,7 @@ export async function getStaticProps() {
     };
   });
 
-  const getNGOCampaigns = contract.filters.campaignCreated(
-    "ngo",
-  );
+  const getNGOCampaigns = contract.filters.campaignCreated("ngo");
   const NGOCampaign = await contract.queryFilter(getNGOCampaigns);
   const ngoData = NGOCampaign.map((e) => {
     return {

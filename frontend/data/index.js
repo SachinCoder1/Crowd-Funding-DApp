@@ -1,2 +1,2 @@
-export * from './navData'
-export * from './dropdownData'
+export * from "./navData";
+export * from "./dropdownData";

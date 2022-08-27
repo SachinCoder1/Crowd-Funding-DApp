@@ -43,21 +43,24 @@ export default function Details({ Data, DonationsData }) {
   ];
 
   const transferFund = async () => {
-    if(fundInput <= 0)return;
-    console.log("Clicked ", fundInput)
+    if (fundInput <= 0) return;
     try {
       await window.ethereum.request({ method: "eth_requestAccounts" });
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
 
-      const contract = new ethers.Contract(Data.address, CampaignABI.abi, signer);
+      const contract = new ethers.Contract(
+        Data.address,
+        CampaignABI.abi,
+        signer
+      );
 
       const transaction = await contract.fundCampaign({
         value: ethers.utils.parseEther(fundInput),
       });
       await transaction.wait();
 
-      setIsUpdated(isUpdated == 'changed' ? 'notChanged' : "changed");
+      setIsUpdated(isUpdated == "changed" ? "notChanged" : "changed");
       setAmount("");
     } catch (error) {
       console.log(error);
@@ -93,22 +96,22 @@ export default function Details({ Data, DonationsData }) {
     Request();
   }, [isUpdated, accountAddress]);
 
-  console.log("Detail page data -> ", Data);
-  console.log("Detail page DonationsData -> ", DonationsData);
   return (
     <MainLayout>
       <CampaignDetail data={Data}>
         {isUserFunding && (
           <>
-          <div className="my-5 space-y-5 w-36">
-            <Input
-              color="green"
-              variant="standard"
-              name="amount"
-              onChange={(e) =>{ setFundInput(e.target.value)  }}
-              label="Enter Amount"
-            />
-          </div>
+            <div className="my-5 space-y-5 w-36">
+              <Input
+                color="green"
+                variant="standard"
+                name="amount"
+                onChange={(e) => {
+                  setFundInput(e.target.value);
+                }}
+                label="Enter Amount"
+              />
+            </div>
             <Button
               onClick={() => transferFund()}
               className="flex items-center justify-center text-base gap-x-2 bg-primary"
@@ -118,7 +121,7 @@ export default function Details({ Data, DonationsData }) {
               Fund Now
               <AiOutlineArrowRight className="text-2xl" />
             </Button>
-            </>
+          </>
         )}
 
         {isUserFunding ? (
