@@ -99,7 +99,7 @@ export default function Details({ Data, DonationsData }) {
   return (
     <MainLayout>
       <CampaignDetail data={Data}>
-        {isUserFunding && (
+        {isUserFunding && accountAddress ?  (
           <>
             <div className="my-5 space-y-5 w-36">
               <Input
@@ -116,13 +116,13 @@ export default function Details({ Data, DonationsData }) {
               onClick={() => transferFund()}
               className="flex items-center justify-center text-base gap-x-2 bg-primary"
               fullWidth
-              disabled={!fundInput.length && fundInput <= 0}
+              disabled={!fundInput.length && !accountAddress && fundInput <= 0}
             >
               Fund Now
               <AiOutlineArrowRight className="text-2xl" />
             </Button>
           </>
-        )}
+        ) : "Connect Wallet to Fund"}
 
         {isUserFunding ? (
           <Button
@@ -130,7 +130,6 @@ export default function Details({ Data, DonationsData }) {
             className="bg-red-500 mt-12"
           >
             Cancel
-            {/* <AiOutlineArrowRight className="text-2xl" /> */}
           </Button>
         ) : (
           <Button

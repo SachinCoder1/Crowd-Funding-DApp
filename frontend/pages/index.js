@@ -9,7 +9,6 @@ import { categoriesMain } from "../data";
 
 export default function Home({ AllData, HealthData, EducationData, ngoData }) {
   const [filteredData, setFilteredData] = useState(AllData);
-  console.log(AllData);
   const [isLoading, setIsLoading] = useState(false);
 
   const [category, setCategory] = useState("all");
