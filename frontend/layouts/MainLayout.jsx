@@ -15,7 +15,7 @@ export default function MainLayout({ metaTitle, metaDescription, children }) {
       <nav>
         <Navbar />
       </nav>
-      <main className="mx-5 my-5 py-5 px-5">{children}</main>
+      <main className="md:mx-5 px-3 my-5 py-5 md:px-5">{children}</main>
     </div>
   );
 }

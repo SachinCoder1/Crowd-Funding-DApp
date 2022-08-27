@@ -26,7 +26,7 @@ export default function Card1({
 }) {
   const router = useRouter();
   return (
-    <Card className="w-96 cursor-pointer hover:scale-105 transition-all hover:shadow-xl">
+    <Card className="w-96 cursor-pointer md:hover:scale-105 transition-all hover:shadow-xl">
       <CardHeader floated={false} className="h-56">
         <Link href={`/${campaignAddress}`}>
           <img src={imgSrc} alt={category} />

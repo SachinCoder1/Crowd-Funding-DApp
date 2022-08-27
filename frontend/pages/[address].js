@@ -142,7 +142,7 @@ export default function Details({ Data, DonationsData }) {
           </Button>
         )}
 
-        <div className="my-5 py-5 px-3">
+        <div className="my-5 py-5 md:px-3">
           <TransactionTab data={tabData} />
         </div>
       </CampaignDetail>

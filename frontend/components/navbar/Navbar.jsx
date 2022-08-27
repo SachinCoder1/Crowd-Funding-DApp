@@ -70,7 +70,7 @@ export default function Navbar() {
           {/* Mobile Navbar */}
           <div
             id="navbar"
-            className={`pt-0 absolute top-2 z-100 mx-auto ${
+            className={`pt-0 absolute top-2 z-50 mx-auto ${
               isMobileNavOpen ? "translate-x-0" : "-translate-x-full"
             } transition-all flex-wrap md:hidden`}
           >

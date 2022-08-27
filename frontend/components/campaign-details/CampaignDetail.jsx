@@ -11,7 +11,7 @@ export default function CampaignDetail({ data, children }) {
         "loading..."
       ) : (
         <div className="mt-6 p-2 bg-white shadow-lg">
-          <div className="grid grid-cols-2">
+          <div className="md:grid grid-cols-2">
             <div className="">
               <img className=" py-5 mx-auto" src={data?.image} />
               <div className="flex items-center justify-center gap-x-8">
@@ -40,11 +40,11 @@ export default function CampaignDetail({ data, children }) {
                 label
               />
               <div className="space-y-3 my-5">
-                <p className="text-6xl font-bold text-blue-500">
+                <p className="md:text-6xl text-4xl font-bold text-blue-500">
                   {data?.title}
                 </p>
                 <p className="text-gray-600">{data?.description}</p>
-                <p className="font-bold text-4xl text-green-500 flex items-center gap-x-1.5">
+                <p className="font-bold md:text-4xl text-3xl text-green-500 flex items-center gap-x-1.5">
                   <span className="text-gray-600 text-base">
                     Required Fund :
                   </span>
