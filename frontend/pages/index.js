@@ -4,14 +4,10 @@ import ContractABI from "../constants/CrowdFunding.json";
 import { ethers } from "ethers";
 import React, { useState, useEffect } from "react";
 import Card1 from "../subcomponents/card/Card1";
-import { Select, Option, Button } from "@material-tailwind/react";
+import { Select, Option } from "@material-tailwind/react";
 import { categoriesMain } from "../data";
 
 export default function Home({ AllData, HealthData, EducationData, ngoData }) {
-  // console.log("All Data -> ", AllData);
-  // console.log("health Data -> ", HealthData);
-  // console.log("eduaction Data -> ", EducationData);
-  // console.log("NGO Data -> ", ngoData);
   const [filteredData, setFilteredData] = useState(AllData);
 
   const [category, setCategory] = useState("all");
@@ -38,35 +34,37 @@ export default function Home({ AllData, HealthData, EducationData, ngoData }) {
       metaTitle="Home"
       metaDescription="All Campaigns where you can see another person's campaigns, fund campaigns in decentralized manner. Truly Decentralized."
     >
-    <div className="w-40 my-10 mx-auto space-y-2">
-       
-      <Select
-        color="green"
-        variant="standard"
-        onChange={(e) => setCategory(e)}
-        label="Category"
+      <div className="w-40 my-10 mx-auto space-y-2">
+        <Select
+          color="green"
+          variant="standard"
+          onChange={(e) => setCategory(e)}
+          label="Category"
         >
-        {categoriesMain?.map((item, index) => (
-          <Option key={index} value={item.value}>
-            {item.label}
-          </Option>
-        ))}
-      </Select>
-     
-        </div>
+          {categoriesMain?.map((item, index) => (
+            <Option key={index} value={item.value}>
+              {item.label}
+            </Option>
+          ))}
+        </Select>
+      </div>
       <div className="flex flex-wrap justify-center items-center gap-x-10">
-        {filteredData?.map((item, index) => (
-          <Card1
-            key={index}
-            imgSrc={item.image}
-            title={item.title}
-            description={item.description}
-            address={item.owner}
-            requiredAmt={item.amount}
-            publishedDate={item.timeStamp}
-            campaignAddress={item.address}
-          />
-        ))}
+        {filteredData.length
+          ? filteredData.map((item, index) => (
+              <Card1
+                key={index}
+                imgSrc={item.image}
+                title={item.title}
+                description={item.description}
+                address={item.owner}
+                requiredAmt={item.amount}
+                publishedDate={item.timeStamp}
+                campaignAddress={item.address}
+              />
+            ))
+          : !filteredData.length && !isLoading
+          ? "No Campaigns Found"
+          : "Loading..."}
       </div>
     </MainLayout>
   );

@@ -3,7 +3,6 @@ import { ethers } from "ethers";
 import { AiOutlinePlus } from "react-icons/ai";
 import { Button } from "@material-tailwind/react";
 import { MainContext } from "../../context/MainContext";
-// import Button from "../../subcomponents/btns/Button";
 
 
 const networks = {
