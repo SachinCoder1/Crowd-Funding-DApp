@@ -11,14 +11,12 @@ import {
   Button,
   IconButton,
 } from "@material-tailwind/react";
-// import Button from "../../subcomponents/btns/Button";
 import { categories } from "../../data";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 import { contractAddress } from "../../constants";
 import { abi } from "../../constants/CrowdFunding.json";
 
 export default function CreateCampaign() {
-  // const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
   const PROJECT_ID = process.env.NEXT_PUBLIC_PROJECT_ID;
   const PROJECT_SECRET = process.env.NEXT_PUBLIC_PROJECT_SECRET;
 
@@ -37,7 +35,7 @@ export default function CreateCampaign() {
 
   const router = useRouter();
   const [isListing, setisListing] = useState(false);
-  const [category, setCategory] = useState("")
+  const [category, setCategory] = useState("");
   const [file, setFile] = useState();
   const [formData, setFormData] = useState({
     title: "",
@@ -51,7 +49,6 @@ export default function CreateCampaign() {
       const add = await client.add(fileData, {
         progress: (prog) => console.log("Image is uploaded : ", prog),
       });
-      // const url = `https://ipfs.infura.io/ipfs/${add.path}`;
       const url = `https://crowdfunding1.infura-ipfs.io/ipfs/${add.path}`;
       setFile(url);
     } catch (error) {
@@ -74,20 +71,30 @@ export default function CreateCampaign() {
       return;
     }
 
-    const amountInWEI = ethers.utils.parseEther(amount)
+    try {
+      const amountInWEI = ethers.utils.parseEther(amount);
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
 
-    const contract = new ethers.Contract(contractAddress, abi, signer);
+      const contract = new ethers.Contract(contractAddress, abi, signer);
 
-    const campaignData = await contract.createCampaign(title, file, description, category, amountInWEI);
-    await campaignData.wait();
+      const campaignData = await contract.createCampaign(
+        title,
+        file,
+        description,
+        category,
+        amountInWEI
+      );
+      await campaignData.wait();
 
-    if(campaignData.to){
-      console.log("campaign started...", campaignData.to);
+      if (campaignData.to) {
+        console.log("campaign started...", campaignData.to);
+        router.push("/pastcampigns");
+      }
+    } catch (error) {
+      console.log("error... ", error);
     }
-    
   };
 
   return (

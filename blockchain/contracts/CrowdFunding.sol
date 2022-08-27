@@ -7,13 +7,13 @@ contract CrowdFunding {
 
     /* Events */
     event campaignCreated(
+        string indexed _category,
+        address indexed _campaignOwner,
+        uint256 indexed _timestamp,
         string _title,
         string _image,
         string _description,
-        string indexed _category,
         uint256 _requiredAmount,
-        uint256 indexed _timestamp,
-        address indexed _campaignOwner,
         address _campaignAddress
     );
 
@@ -45,13 +45,13 @@ contract CrowdFunding {
         s_AllCampaignAddresses.push(address(newCampaign));
 
         emit campaignCreated(
+            _category,
+            msg.sender,
+            block.timestamp,
             _title,
             _image,
             _description,
-            _category,
             _requiredAmount,
-            block.timestamp,
-            msg.sender,
             address(newCampaign)
         );
     }
@@ -72,8 +72,8 @@ contract Campaign {
     /* Events */
     event campaignFunded(
         address indexed funder,
-        uint256 amount,
-        uint256 indexed timestamp
+        uint256 indexed timestamp,
+        uint256 amount
     );
 
     CampaignStruct newCampaign;
@@ -114,6 +114,6 @@ contract Campaign {
         );
         newCampaign.campaignOwner.transfer(msg.value);
         newCampaign.recievedAmount += msg.value;
-        emit campaignFunded(msg.sender, msg.value, block.timestamp);
+        emit campaignFunded(msg.sender, block.timestamp, msg.value);
     }
 }

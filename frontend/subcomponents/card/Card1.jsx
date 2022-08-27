@@ -4,15 +4,15 @@ import {
   CardBody,
   CardFooter,
   Typography,
-  Tooltip,
   Button,
 } from "@material-tailwind/react";
-//   import ImgBig from '../../assets/images/education_image.jpg'
 import { FaEthereum } from "react-icons/fa";
 import { BsPersonCheckFill } from "react-icons/bs";
+import { AiOutlineArrowRight } from "react-icons/ai";
 import { MdDateRange } from "react-icons/md";
 import Link from "next/link";
 import { timeConverter } from "../../utils/DateConverter";
+import { useRouter } from "next/router";
 
 export default function Card1({
   imgSrc,
@@ -22,8 +22,9 @@ export default function Card1({
   address,
   requiredAmt,
   publishedDate,
-  campaignAddress
+  campaignAddress,
 }) {
+  const router = useRouter();
   return (
     <Card className="w-96 cursor-pointer hover:scale-105 transition-all hover:shadow-xl">
       <CardHeader floated={false} className="h-56">
@@ -40,7 +41,6 @@ export default function Card1({
 
       <CardFooter divider className="flex items-center justify-between py-3">
         <Typography className="flex items-center gap-x-1" variant="lead">
-          {" "}
           <FaEthereum className="text-[#3c3c3d]" /> {requiredAmt} ETH
         </Typography>
         <Typography
@@ -53,21 +53,23 @@ export default function Card1({
         </Typography>
       </CardFooter>
       <CardFooter divider className="flex items-center justify-between py-3">
-        <Typography variant="small"></Typography>
+        <Typography variant="small">
+          <Button
+            onClick={() => router.push(`/${campaignAddress}`)}
+            className="bg-primary px-8 flex items-center gap-x-2"
+          >
+            View <AiOutlineArrowRight className="text-lg" />
+          </Button>
+        </Typography>
         <Typography
           variant="small"
           color="gray"
           className="flex gap-1 items-center"
         >
           <MdDateRange />
-          {/* {new Date(publishedDate * 1000).toLocaleString()} */}
           {timeConverter(publishedDate)}
         </Typography>
       </CardFooter>
-      
-        {/* <Button className="bg-primary my-4" fullWidth>
-            View
-        </Button> */}
     </Card>
   );
 }

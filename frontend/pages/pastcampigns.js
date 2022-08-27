@@ -18,11 +18,6 @@ export default function Pastcampigns() {
 
         const getAllCampaigns = contract.filters.campaignCreated(
           null,
-          null,
-          null,
-          null,
-          null,
-          null,
           accountAddress
         );
         const AllCampaigns = await contract.queryFilter(getAllCampaigns);
@@ -38,6 +33,7 @@ export default function Pastcampigns() {
           };
         });
         setMyCampaigns(MyData);
+        setIsLoading(false)
     }
         catch (error) {
             setIsLoading(false);
@@ -50,9 +46,9 @@ export default function Pastcampigns() {
 
   return (
     <MainLayout>
-      <div className="flex flex-wrap justify-center items-center gap-x-10">
+      <div className="flex flex-wrap items-center gap-10">
         {accountAddress
-          ? myCampaigns.length
+          ? myCampaigns.length && !isLoading
             ? myCampaigns.map((item, index) => (
                 <Card1
                   key={index}

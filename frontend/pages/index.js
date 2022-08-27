@@ -9,13 +9,17 @@ import { categoriesMain } from "../data";
 
 export default function Home({ AllData, HealthData, EducationData, ngoData }) {
   const [filteredData, setFilteredData] = useState(AllData);
+  console.log(AllData)
+  const [isLoading, setIsLoading] = useState(false)
 
   const [category, setCategory] = useState("all");
 
   useEffect(() => {
     switch (category) {
       case "education":
+        setIsLoading(true)
         setFilteredData(EducationData);
+        setIsLoading(false)
         break;
       case "health":
         setFilteredData(HealthData);
@@ -24,7 +28,9 @@ export default function Home({ AllData, HealthData, EducationData, ngoData }) {
         setFilteredData(ngoData);
         break;
       default:
+        setIsLoading(true)
         setFilteredData(AllData);
+        setIsLoading(false)
         break;
     }
   }, [category]);
@@ -48,7 +54,7 @@ export default function Home({ AllData, HealthData, EducationData, ngoData }) {
           ))}
         </Select>
       </div>
-      <div className="flex flex-wrap justify-center items-center gap-x-10">
+      <div className="flex flex-wrap items-center gap-10">
         {filteredData.length
           ? filteredData.map((item, index) => (
               <Card1
@@ -95,14 +101,7 @@ export async function getStaticProps() {
   });
 
   const getHealthCampaigns = contract.filters.campaignCreated(
-    null,
-    null,
-    null,
     "health",
-    null,
-    null,
-    null,
-    null
   );
   const HealthCampaigns = await contract.queryFilter(getHealthCampaigns);
   const HealthData = HealthCampaigns.map((e) => {
@@ -118,14 +117,7 @@ export async function getStaticProps() {
   });
 
   const getEducationCampaigns = contract.filters.campaignCreated(
-    null,
-    null,
-    null,
     "education",
-    null,
-    null,
-    null,
-    null
   );
   const EducationCampaigns = await contract.queryFilter(getEducationCampaigns);
   const EducationData = EducationCampaigns.map((e) => {
@@ -141,14 +133,7 @@ export async function getStaticProps() {
   });
 
   const getNGOCampaigns = contract.filters.campaignCreated(
-    null,
-    null,
-    null,
     "ngo",
-    null,
-    null,
-    null,
-    null
   );
   const NGOCampaign = await contract.queryFilter(getNGOCampaigns);
   const ngoData = NGOCampaign.map((e) => {
