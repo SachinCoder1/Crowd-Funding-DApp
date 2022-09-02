@@ -10,6 +10,8 @@ Complete Full Stack Decentralization Crowd Funding Application using **Solidity*
 &nbsp;
 &nbsp;
 
+### Solidity Version ^0.8.7
+
 
 <a href="https://ibb.co/xmYfJgp"><img src="https://i.ibb.co/5YknBjN/Screenshot-357.png" alt="Screenshot-357" border="0"></a>
 <!-- <a href="https://ibb.co/T0hbF8Z"><img src="https://i.ibb.co/yksYbyD/Screenshot-355.png" alt="Screenshot-355" border="0"></a>  -->
